@@ -18,7 +18,7 @@ import sys
 
 SCOPE = ["basic", "comments", "relationships", "likes"]
 
-GRAB_COOKIE = '/tmp/instabot.cookie.'+str(time.time())+'.txt'
+GRAB_COOKIE = '/tmp/instabot.cookie.txt'#+str(time.time())+'.txt'
 
 api = InstagramAPI(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, redirect_uri=REDIRECT_URI)
 access_token = get_access_token_by_credentials(api, USERNAME, PASSWORD, SCOPE, GRAB_COOKIE)
