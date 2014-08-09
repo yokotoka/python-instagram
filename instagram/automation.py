@@ -77,21 +77,23 @@ def pass_the_login_form(grab, username, password):
     return go_redirect_location(grab, redirect_location)
 
 
-def get_access_token_by_credentials(api, username, password, scope, cookie_file=None):
+def get_access_token_by_credentials(api, username, password, scope, grab_setup_opts={}):
     log.debug('Start extracting token...')
 
-    if not os.path.exists(os.path.dirname(cookie_file)):
-        os.makedirs(os.path.dirname(cookie_file))
-    if not os.path.exists(cookie_file):
-        with open(cookie_file, 'w'):
-            pass
+    if grab_setup_opts.has_key('cookiefile'):
+        cookie_file = grab_setup_opts['cookiefile']
+        if not os.path.exists(os.path.dirname(cookie_file)):
+            os.makedirs(os.path.dirname(cookie_file))
+        if not os.path.exists(cookie_file):
+            with open(cookie_file, 'w'):
+                pass
 
     grab = Grab()
     grab.setup(
-        cookiefile=cookie_file,
         debug_post=True,
         follow_location=False,
-        log_dir='.'
+        log_dir='.',
+        **grab_setup_opts
     )
 
     redirect_uri = api.get_authorize_login_url(scope=scope)
