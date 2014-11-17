@@ -12,7 +12,7 @@ __author__ = 'yokotoka'
 from grab import Grab
 import os
 import re
-
+import time
 import logging
 log = logging.getLogger(__file__)
 log.addHandler(logging.StreamHandler())
@@ -33,6 +33,7 @@ def click_yes_iam_authorize_this_app(grab, authorize_form):
     grab.set_input('allow', 'Authorize')
     log.debug('Sending "Yes, we approve" request...')
     step1_3_submit_authorize_form = grab.submit(submit_name='allow', extra_post=dict(allow='Authorize'))
+    time.sleep(3)
     if not step1_3_submit_authorize_form.headers.has_key('Location'):
         raise UnknownException('Not redirect after approve access')
     maybe_code_redirect_location = step1_3_submit_authorize_form.headers['Location']
@@ -47,6 +48,7 @@ def go_redirect_location(grab, redirect_location):
         raise UnknownException('Redirected, but not in /oauth/authorize url')
 
     step1_2_redirect_to_authorize = grab.go(redirect_location)
+    time.sleep(3)
 
     if not step1_2_redirect_to_authorize.headers.has_key('Location') and "is requesting to do the following" in step1_2_redirect_to_authorize.unicode_body():
         code_redirect_location = click_yes_iam_authorize_this_app(grab, authorize_form=step1_2_redirect_to_authorize)
@@ -65,6 +67,7 @@ def pass_the_login_form(grab, username, password):
     grab.set_input('username', username)
     grab.set_input('password', password)
     step1_1_submit_login_and_pass = grab.submit()
+    time.sleep(3)
 
     if "Please enter a correct username and password" in step1_1_submit_login_and_pass.unicode_body():
         raise InvalidUsernameOrPasswordError("username={}, password=******".format(username))
@@ -101,6 +104,7 @@ def get_access_token_by_credentials(api, username, password, scope, grab_setup_o
 
     log.debug('Make request to redirect URI...')
     step1_login = grab.go(redirect_uri)
+    time.sleep(3)
 
     if not step1_login.headers.has_key('Location') and ('username' in step1_login.unicode_body() and 'password' in step1_login.unicode_body()):
         code_redirect_location = pass_the_login_form(grab, username, password)
@@ -121,5 +125,6 @@ def get_access_token_by_credentials(api, username, password, scope, grab_setup_o
     access_code, = maybe_code_list
     log.debug('Access code = [{}]'.format(access_code))
     access_token = api.exchange_code_for_access_token(access_code)
+    time.sleep(3)
     log.debug('ACCESS_TOKEN=[{}]'.format(access_token))
     return access_token

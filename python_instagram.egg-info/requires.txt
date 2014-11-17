@@ -1,2 +1,6 @@
 simplejson
 httplib2
+requests
+pycurl
+lxml
+grab
