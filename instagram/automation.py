@@ -93,7 +93,7 @@ def get_access_token_by_credentials(api, username, password, scope, grab_setup_o
 
     grab = Grab()
     grab.setup(
-        debug_post=True,
+        #debug_post=True,
         follow_location=False,
         log_dir='.',
         **grab_setup_opts
