@@ -120,7 +120,8 @@ def bind_method(**config):
             if self.signature and self.api.client_ips != None and self.api.client_secret != None:
                 secret = self.api.client_secret
                 ips = self.api.client_ips
-                signature = hmac.new(secret, ips, sha256).hexdigest()
+                import IPython;IPython.embed()
+                signature = hmac.new(str(secret), str(ips), sha256).hexdigest()
                 headers['X-Insta-Forwarded-For'] = '|'.join([ips, signature])
             response, content = OAuth2Request(self.api).make_request(url, method=method, body=body, headers=headers)
             if response['status'] == '503' or response['status'] == '429':
